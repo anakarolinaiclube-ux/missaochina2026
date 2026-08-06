@@ -4,6 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Missão China 2026 · Kaizen Consulting — Descubra seu pacote</title>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2429432580795746');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2429432580795746&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -79,6 +96,13 @@
     font-style:italic;
     color:var(--seal-bright);
   }
+  .hero p.intro{
+    color:var(--ink);
+    font-size:17px;
+    max-width:50ch;
+    margin:0 0 16px;
+    line-height:1.55;
+  }
   .hero p.lede{
     color:var(--muted);
     font-size:16px;
@@ -130,6 +154,57 @@
   @media (max-width:520px){
     .manifest{grid-template-columns:repeat(2,1fr);}
     .manifest div:nth-child(3){border-left:none;}
+  }
+
+  /* ---------- boarding overlay ---------- */
+  .boarding-overlay{
+    position:fixed; inset:0;
+    background:var(--bg);
+    z-index:999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.45s ease;
+  }
+  .boarding-overlay.active{opacity:1; pointer-events:all;}
+  .boarding-inner{width:100%; max-width:640px; padding:0 24px; text-align:center;}
+  .boarding-inner .eyebrow{display:block; margin-bottom:22px;}
+  .boarding-inner .manifest{margin-top:0;}
+  .boarding-inner .manifest div{opacity:0; transform:translateY(10px);}
+  .boarding-overlay.active .manifest div{animation:cascadeIn 0.5s ease forwards;}
+  .boarding-overlay.active .manifest div:nth-child(1){animation-delay:0.35s;}
+  .boarding-overlay.active .manifest div:nth-child(2){animation-delay:0.65s;}
+  .boarding-overlay.active .manifest div:nth-child(3){animation-delay:0.95s;}
+  .boarding-overlay.active .manifest div:nth-child(4){animation-delay:1.25s;}
+  @keyframes cascadeIn{to{opacity:1; transform:translateY(0);}}
+  .boarding-route{border:none; padding:40px 0 0;}
+  .boarding-note{
+    margin-top:22px;
+    font-size:12px;
+    letter-spacing:0.06em;
+    color:var(--muted);
+    opacity:0;
+    animation:cascadeIn 0.5s ease forwards;
+    animation-delay:1.55s;
+  }
+  .boarding-route .route-line::after{content:none;}
+  .flying-plane{
+    position:absolute;
+    left:0; top:50%;
+    transform:translate(0,-55%);
+    color:var(--brass);
+    font-size:15px;
+    opacity:0;
+  }
+  .boarding-route.flying .flying-plane{
+    opacity:1;
+    animation:flyAcross 4.9s ease-in-out forwards;
+  }
+  @keyframes flyAcross{
+    from{left:0%;}
+    to{left:96%;}
   }
 
   /* ---------- route strip ---------- */
@@ -358,9 +433,21 @@
     font-size:30px;
     color:var(--brass);
   }
+  .pass-price .amount-suffix{
+    font-family:'Inter', sans-serif;
+    font-size:13px;
+    color:var(--muted);
+    margin-left:4px;
+  }
+  .pass-price .full-price{
+    font-size:12.5px;
+    color:var(--ink);
+    margin-top:4px;
+  }
   .pass-price .cond{
     font-size:12px;
     color:var(--muted);
+    margin-top:2px;
   }
   .pass-cta{padding:22px 24px 26px;}
   .pass-cta .btn-primary{width:100%; justify-content:center;}
@@ -390,32 +477,39 @@
     <div class="wrap hero-inner">
       <p class="eyebrow">Kaizen Consulting · Missão China 2026</p>
       <h1>Sua empresa <em>frente a frente</em><br>com os fabricantes da China.</h1>
+      <p class="intro">A Kaizen Consulting leva sua empresa à maior feira multissetorial do mundo e aos polos de eletrônicos de Shenzhen, com assessoria especializada de ponta a ponta.</p>
       <p class="lede">Responda 5 perguntas rápidas e descubra qual pacote da missão combina com o momento da sua empresa.</p>
-      <button class="btn-primary" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">
+      <button class="btn-primary" id="ctaStart" onclick="startBoarding()">
         Descobrir meu pacote
         <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
+    </div>
+  </section>
 
+  <!-- ============ BOARDING OVERLAY ============ -->
+  <div class="boarding-overlay hidden" id="boarding">
+    <div class="boarding-inner">
+      <p class="eyebrow">Preparando seu embarque</p>
       <div class="manifest">
         <div><div class="num">20</div><div class="lbl">Anos em comex</div></div>
         <div><div class="num">US$1bi+</div><div class="lbl">Importados</div></div>
         <div><div class="num">35 mil+</div><div class="lbl">Expositores na feira</div></div>
         <div><div class="num">20</div><div class="lbl">Vagas na missão</div></div>
       </div>
-    </div>
-  </section>
 
-  <!-- ============ ROUTE STRIP ============ -->
-  <div class="route">
-    <div class="wrap route-inner">
-      <div><span class="route-city">GRU</span><br>12 OUT</div>
-      <div class="route-line"></div>
-      <div style="text-align:right"><span class="route-city">CAN</span><br>22 OUT</div>
+      <div class="route boarding-route">
+        <div class="wrap route-inner">
+          <div><span class="route-city">GRU</span><br>12 OUT</div>
+          <div class="route-line" id="boardingLine"><span class="flying-plane" id="flyingPlane">✈</span></div>
+          <div style="text-align:right"><span class="route-city">CAN</span><br>22 OUT</div>
+        </div>
+      </div>
+      <p class="boarding-note mono">Embarcando na sua avaliação de perfil…</p>
     </div>
   </div>
 
   <!-- ============ QUIZ ============ -->
-  <section id="quiz">
+  <section id="quiz" class="hidden">
     <div class="wrap">
       <div class="section-head">
         <p class="eyebrow">Avaliação de perfil</p>
@@ -463,13 +557,14 @@
 
         <div class="pass-price">
           <div>
-            <div class="amount" id="passAmount">—</div>
-            <div class="cond">em 5x sem juros · aéreo + hospedagem 5★ + visto + seguro inclusos</div>
+            <div class="amount"><span id="passInstallment">—</span><span class="amount-suffix">/mês</span></div>
+            <div class="full-price">5x sem juros · total <span id="passFull">—</span></div>
+            <div class="cond">aéreo + hospedagem 5★ + visto + seguro inclusos</div>
           </div>
         </div>
 
         <div class="pass-cta">
-          <a class="btn-primary" id="ctaWhats" href="#" target="_blank" rel="noopener">
+          <a class="btn-primary" id="ctaWhats" href="#" target="_blank" rel="noopener" onclick="trackLead()">
             Confirmar minha vaga no WhatsApp
             <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
@@ -485,6 +580,34 @@
 
 <script>
   const WHATS_NUMBER = "5531990733464";
+
+  function trackLead(){
+    if (typeof fbq === "function"){
+      fbq("track", "Lead");
+    }
+  }
+
+  function startBoarding(){
+    const overlay = document.getElementById("boarding");
+    const route = overlay.querySelector(".boarding-route");
+    overlay.classList.remove("hidden");
+    requestAnimationFrame(() => overlay.classList.add("active"));
+    setTimeout(() => route.classList.add("flying"), 300);
+    setTimeout(() => finishBoarding(), 5200);
+  }
+
+  function finishBoarding(){
+    const overlay = document.getElementById("boarding");
+    const route = overlay.querySelector(".boarding-route");
+    const quiz = document.getElementById("quiz");
+    overlay.classList.remove("active");
+    quiz.classList.remove("hidden");
+    quiz.scrollIntoView({behavior:"smooth"});
+    setTimeout(() => {
+      overlay.classList.add("hidden");
+      route.classList.remove("flying");
+    }, 500);
+  }
 
   const PACKAGES = {
     "economica|duplo":    { name: "Essencial Duplo",       price: 49500, class: "Econômica", room: "Apto duplo" },
@@ -645,7 +768,10 @@
     document.getElementById("passCompany").textContent = answers.empresa;
     document.getElementById("passClass").textContent = pkg.class;
     document.getElementById("passRoom").textContent = pkg.room;
-    document.getElementById("passAmount").textContent =
+    const installment = Math.round(pkg.price / 5);
+    document.getElementById("passInstallment").textContent =
+      "5x de R$ " + installment.toLocaleString("pt-BR");
+    document.getElementById("passFull").textContent =
       "R$ " + pkg.price.toLocaleString("pt-BR");
 
     const msg = `Olá! Fiz a avaliação da Missão China e meu perfil ficou assim:
@@ -654,7 +780,7 @@ Nome: ${answers.nome}
 Empresa: ${answers.empresa}
 Setor: ${answers.setor}
 Experiência com importação: ${answers.experiencia}
-Pacote recomendado: ${pkg.name} — R$ ${pkg.price.toLocaleString("pt-BR")}
+Pacote recomendado: ${pkg.name} — 5x de R$ ${installment.toLocaleString("pt-BR")} (total R$ ${pkg.price.toLocaleString("pt-BR")})
 
 Quero confirmar minha vaga!`;
 
